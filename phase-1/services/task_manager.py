@@ -3,17 +3,24 @@
 Provides CRUD operations and validation for todo tasks in an in-memory list.
 """
 
+from pathlib import Path
 from typing import List, Optional
 from datetime import datetime
+
+from services.persistence import load_tasks_from_file, save_tasks_to_file
 
 
 class TaskManager:
     """Manages in-memory storage and operations for todo tasks."""
 
-    def __init__(self) -> None:
-        """Initialize task manager with empty task list and ID counter."""
-        self._tasks: List[dict] = []
-        self._next_id: int = 1
+    def __init__(self, tasks_file: Optional[str] = None) -> None:
+        """Initialize task manager with persisted task list and ID counter."""
+        if tasks_file is None:
+            tasks_file = str(Path(__file__).resolve().parent.parent / "tasks.json")
+        self._tasks_file = tasks_file
+        tasks, next_id = load_tasks_from_file(self._tasks_file)
+        self._tasks: List[dict] = tasks
+        self._next_id: int = next_id
 
     def add_task(
         self,
@@ -54,6 +61,7 @@ class TaskManager:
         # Add to storage
         self._tasks.append(task)
         self._next_id += 1
+        self._save_tasks()
 
         return {
             "status": "success",
@@ -126,6 +134,8 @@ class TaskManager:
             task["description"] = description.strip() if description else None
             updates["description"] = True
 
+        self._save_tasks()
+
         return {
             "status": "success",
             "task": task,
@@ -150,6 +160,7 @@ class TaskManager:
 
         # Remove from storage
         self._tasks.remove(task)
+        self._save_tasks()
 
         return {
             "status": "success",
@@ -173,6 +184,7 @@ class TaskManager:
 
         # Toggle status
         task["completed"] = not task["completed"]
+        self._save_tasks()
 
         return {
             "status": "success",
@@ -191,3 +203,7 @@ class TaskManager:
             True if task exists, False otherwise
         """
         return self.get_task(task_id) is not None
+
+    def _save_tasks(self) -> None:
+        """Persist current tasks to disk; log failure but continue running."""
+        save_tasks_to_file(self._tasks, self._tasks_file)

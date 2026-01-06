@@ -18,9 +18,11 @@ def main():
         choice = cli_interface.get_user_choice()
 
         if choice == -1:
+            task_manager._save_tasks()
             print("\nExiting...")
             return 0
         elif choice == 6:
+            task_manager._save_tasks()
             print("\nGoodbye!")
             return 0
         elif choice == 1:
