@@ -175,6 +175,7 @@ export default function CreateTaskForm({
                   w-full px-4 py-3
                   bg-gray-50 border border-gray-200
                   rounded-xl
+                  text-gray-900
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white
                   transition-all duration-200
                   placeholder-gray-400
@@ -213,6 +214,7 @@ export default function CreateTaskForm({
                   w-full px-4 py-3
                   bg-gray-50 border border-gray-200
                   rounded-xl
+                  text-gray-900
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white
                   transition-all duration-200
                   placeholder-gray-400
