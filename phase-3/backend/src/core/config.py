@@ -1,0 +1,36 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    """Application settings loaded from environment variables"""
+
+    # Database
+    DATABASE_URL: str
+
+    # Authentication
+    BETTER_AUTH_SECRET: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_DAYS: int = 7
+
+    # CORS
+    FRONTEND_URL: str
+
+    # OpenRouter (OpenAI-compatible API)
+    OPENROUTER_API_KEY: str
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    OPENROUTER_MODEL: str = "anthropic/claude-3.5-sonnet"
+
+    # OpenAI Agents SDK
+    AGENT_NAME: str = "TodoAssistant"
+    AGENT_INSTRUCTIONS: str = "You are a helpful AI assistant for managing todo tasks."
+    MAX_TOKENS: int = 2000
+    TEMPERATURE: float = 0.7
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+    )
+
+
+settings = Settings()
