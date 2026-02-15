@@ -8,7 +8,7 @@ from src.core.database import get_session
 from src.middleware.auth import get_current_user, verify_user_access
 from src.models.user import User
 # Use Groq agent with MCP tool integration
-from src.core.groq_mcp_agent import groq_mcp_agent
+from src.core.groq_mcp_agent import get_groq_mcp_agent
 from src.core.conversation_service import ConversationService, MessageService
 from src.schemas.chat import (
     ChatRequest,
@@ -70,7 +70,7 @@ async def chat(
         )
 
         # Run agent with Groq + MCP tools
-        agent_response = await groq_mcp_agent.run_agent(
+        agent_response = await get_groq_mcp_agent().run_agent(
             user_message=request.message,
             conversation_history=history,
             user_id=user_id,
