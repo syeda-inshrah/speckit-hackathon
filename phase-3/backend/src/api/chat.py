@@ -1,4 +1,4 @@
-"""Chat API endpoints for AI-powered task management with OpenAI Agents SDK + MCP"""
+"""Chat API endpoints for AI-powered task management with Groq + MCP"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from uuid import UUID
@@ -7,8 +7,8 @@ from typing import List
 from src.core.database import get_session
 from src.middleware.auth import get_current_user, verify_user_access
 from src.models.user import User
-# Use simple Groq service instead of MCP
-from src.core.groq_chat_service import groq_chat_service
+# Use Groq agent with MCP tool integration
+from src.core.groq_mcp_agent import groq_mcp_agent
 from src.core.conversation_service import ConversationService, MessageService
 from src.schemas.chat import (
     ChatRequest,
@@ -69,24 +69,28 @@ async def chat(
             )
         )
 
-        # Run agent with Groq (direct integration)
-        agent_response = await groq_chat_service.run_agent(
+        # Run agent with Groq + MCP tools
+        agent_response = await groq_mcp_agent.run_agent(
             user_message=request.message,
             conversation_history=history,
             user_id=user_id,
             session=session
         )
 
-        # Extract task operations from response
+        # Extract task operations from MCP tool results
         task_operations = []
         if agent_response.get("tool_results"):
-            for result in agent_response["tool_results"]:
-                task_operations.append(TaskOperation(
-                    operation=result.get("operation"),
-                    task_id=result.get("task_id"),
-                    title=result.get("title"),
-                    details=result.get("details")
-                ))
+            for tool_exec in agent_response["tool_results"]:
+                tool_name = tool_exec.get("tool", "")
+                result = tool_exec.get("result", {})
+
+                if result.get("success"):
+                    task_operations.append(TaskOperation(
+                        operation=tool_name,
+                        task_id=result.get("task_id"),
+                        title=result.get("title"),
+                        details=result.get("message")
+                    ))
 
         # Save assistant message
         assistant_content = agent_response.get("content", "")
