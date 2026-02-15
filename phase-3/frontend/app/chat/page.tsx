@@ -67,7 +67,8 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, tempUserMessage]);
 
     try {
-      const response = await fetch(`http://localhost:7860/api/${userId}/chat`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7860';
+      const response = await fetch(`${apiUrl}/api/${userId}/chat`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
