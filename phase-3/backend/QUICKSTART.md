@@ -22,11 +22,24 @@ cp .env.example .env
 ```
 
 Your `.env` should have:
+
+**Option A: Using OpenRouter (Multiple Models)**
 ```env
 DATABASE_URL=postgresql://user:pass@host/db?sslmode=require
 BETTER_AUTH_SECRET=your-generated-secret-here
+LLM_PROVIDER=OPENROUTER
 OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxx
 OPENROUTER_MODEL=anthropic/claude-3.5-sonnet
+FRONTEND_URL=http://localhost:3000
+```
+
+**Option B: Using Groq (Ultra-Fast)**
+```env
+DATABASE_URL=postgresql://user:pass@host/db?sslmode=require
+BETTER_AUTH_SECRET=your-generated-secret-here
+LLM_PROVIDER=GROQ
+GROQ_API_KEY=gsk_xxxxxxxxxxxxx
+GROQ_MODEL=llama-3.3-70b-versatile
 FRONTEND_URL=http://localhost:3000
 ```
 
@@ -99,17 +112,34 @@ Generate with:
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-**OPENROUTER_API_KEY:**
+**LLM_PROVIDER:**
+```
+OPENROUTER
+```
+Or use `GROQ` for ultra-fast inference
+
+**OPENROUTER_API_KEY** (if using OpenRouter):
 ```
 sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 Get from: https://openrouter.ai/keys
+
+**GROQ_API_KEY** (if using Groq):
+```
+gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+Get from: https://console.groq.com/keys
 
 ### Step 3: Add Optional Secrets
 
 **OPENROUTER_MODEL** (optional):
 ```
 anthropic/claude-3.5-sonnet
+```
+
+**GROQ_MODEL** (optional):
+```
+llama-3.3-70b-versatile
 ```
 
 **FRONTEND_URL** (optional):
@@ -160,12 +190,16 @@ python app.py
 ### Required (Must Have)
 - [ ] `DATABASE_URL` - PostgreSQL connection string
 - [ ] `BETTER_AUTH_SECRET` - JWT secret (32+ characters)
-- [ ] `OPENROUTER_API_KEY` - OpenRouter API key
+- [ ] `LLM_PROVIDER` - Choose: `OPENROUTER` or `GROQ`
+- [ ] `OPENROUTER_API_KEY` - Required if using OpenRouter
+- [ ] `GROQ_API_KEY` - Required if using Groq
 
 ### Optional (Have Defaults)
 - [ ] `OPENROUTER_MODEL` - Default: `anthropic/claude-3.5-sonnet`
+- [ ] `GROQ_MODEL` - Default: `llama-3.3-70b-versatile`
 - [ ] `FRONTEND_URL` - Default: `http://localhost:3000`
 - [ ] `OPENROUTER_BASE_URL` - Default: `https://openrouter.ai/api/v1`
+- [ ] `GROQ_BASE_URL` - Default: `https://api.groq.com/openai/v1`
 - [ ] `JWT_ALGORITHM` - Default: `HS256`
 - [ ] `JWT_EXPIRATION_DAYS` - Default: `7`
 
@@ -182,13 +216,26 @@ python app.py
 # Format: postgresql://user:pass@host/db?sslmode=require
 ```
 
-### Get OpenRouter API Key
+### Get LLM API Key
+
+**Option A: OpenRouter (Multiple Models)**
 ```bash
 # 1. Go to https://openrouter.ai
 # 2. Sign up (free $5 credits)
 # 3. Go to https://openrouter.ai/keys
 # 4. Create new key
 # 5. Copy key (starts with sk-or-v1-)
+# 6. Set LLM_PROVIDER=OPENROUTER in .env
+```
+
+**Option B: Groq (Ultra-Fast)**
+```bash
+# 1. Go to https://console.groq.com
+# 2. Sign up (free tier)
+# 3. Go to https://console.groq.com/keys
+# 4. Create new key
+# 5. Copy key (starts with gsk_)
+# 6. Set LLM_PROVIDER=GROQ in .env
 ```
 
 ### Generate JWT Secret
@@ -240,9 +287,12 @@ curl http://localhost:7860/health
 - Local: Create `.env` file with all variables
 - HF Spaces: Add secrets in Space settings
 
-### Issue: "OPENROUTER_API_KEY is not set"
-**Cause**: Missing AI API key
-**Solution**: Get key from https://openrouter.ai/keys
+### Issue: "OPENROUTER_API_KEY is not set" or "GROQ_API_KEY is not set"
+**Cause**: Missing AI API key for selected provider
+**Solution**:
+- OpenRouter: Get key from https://openrouter.ai/keys
+- Groq: Get key from https://console.groq.com/keys
+- Make sure `LLM_PROVIDER` matches your API key
 
 ### Issue: ".env file not found"
 **Cause**: No .env file in directory

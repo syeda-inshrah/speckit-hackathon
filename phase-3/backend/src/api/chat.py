@@ -7,7 +7,8 @@ from typing import List
 from src.core.database import get_session
 from src.middleware.auth import get_current_user, verify_user_access
 from src.models.user import User
-from src.core.agent_service import agent_service_mcp
+# Use simple Groq service instead of MCP
+from src.core.groq_chat_service import groq_chat_service
 from src.core.conversation_service import ConversationService, MessageService
 from src.schemas.chat import (
     ChatRequest,
@@ -20,7 +21,7 @@ from src.schemas.chat import (
     ConversationCreate
 )
 
-router = APIRouter(prefix="/api", tags=["chat"])
+router = APIRouter(prefix="", tags=["chat"])
 
 
 @router.post("/{user_id}/chat", response_model=ChatResponse)
@@ -68,31 +69,23 @@ async def chat(
             )
         )
 
-        # Run agent with function tools
-        agent_response = await agent_service_mcp.run_agent(
+        # Run agent with Groq (direct integration)
+        agent_response = await groq_chat_service.run_agent(
             user_message=request.message,
             conversation_history=history,
             user_id=user_id,
-            session=session  # Pass database session for tool execution
+            session=session
         )
 
-        # Extract task operations from tool results
+        # Extract task operations from response
         task_operations = []
-        if agent_response.get("tool_calls"):
-            for tool_call, tool_result in zip(
-                agent_response["tool_calls"],
-                agent_response.get("tool_results", [])
-            ):
-                function_name = tool_call["function"]["name"]
-                arguments = tool_call["function"]["arguments"]
-                result = tool_result.get("result", {})
-
+        if agent_response.get("tool_results"):
+            for result in agent_response["tool_results"]:
                 task_operations.append(TaskOperation(
-                    operation=function_name,
+                    operation=result.get("operation"),
                     task_id=result.get("task_id"),
-                    title=arguments.get("title"),
-                    description=arguments.get("description"),
-                    details=result.get("message")
+                    title=result.get("title"),
+                    details=result.get("details")
                 ))
 
         # Save assistant message

@@ -9,7 +9,7 @@ from src.models.user import User
 from src.models.task import Task
 from src.schemas.task import TaskCreate, TaskUpdate, TaskResponse
 
-router = APIRouter(prefix="/api/{user_id}/tasks", tags=["Tasks"])
+router = APIRouter(prefix="/{user_id}/tasks", tags=["Tasks"])
 
 
 @router.get("", response_model=list[TaskResponse])

@@ -92,7 +92,14 @@ Generate with:
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-#### 3. OPENROUTER_API_KEY (Required)
+#### 3. LLM_PROVIDER (Optional)
+Choose your LLM provider. Default: `OPENROUTER`
+
+Options:
+- `OPENROUTER` - Multiple models, pay-as-you-go
+- `GROQ` - Ultra-fast inference, free tier
+
+#### 4. OPENROUTER_API_KEY (Required if using OpenRouter)
 Your OpenRouter API key for AI chat functionality
 
 Get your key from: [OpenRouter](https://openrouter.ai/keys)
@@ -101,7 +108,7 @@ Get your key from: [OpenRouter](https://openrouter.ai/keys)
 sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-#### 4. OPENROUTER_MODEL (Optional)
+#### 5. OPENROUTER_MODEL (Optional)
 AI model to use. Default: `anthropic/claude-3.5-sonnet`
 
 Available models:
@@ -111,7 +118,26 @@ Available models:
 - `meta-llama/llama-3.1-70b-instruct`
 - `google/gemini-pro-1.5`
 
-#### 5. FRONTEND_URL (Optional)
+#### 6. GROQ_API_KEY (Required if using Groq)
+Your Groq API key for ultra-fast AI inference
+
+Get your key from: [Groq Console](https://console.groq.com/keys)
+
+```
+gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+#### 7. GROQ_MODEL (Optional)
+Groq model to use. Default: `llama-3.3-70b-versatile`
+
+Available models:
+- `llama-3.3-70b-versatile` (Recommended)
+- `llama-3.1-70b-versatile`
+- `llama-3.1-8b-instant`
+- `mixtral-8x7b-32768`
+- `gemma2-9b-it`
+
+#### 8. FRONTEND_URL (Optional)
 Your frontend URL for CORS. Default: `http://localhost:3000`
 
 ```
@@ -168,30 +194,53 @@ https://your-frontend.vercel.app
 - [Railway](https://railway.app) - Free tier
 - [Render](https://render.com) - Free tier
 
-## 🤖 AI Setup (OpenRouter)
+## 🤖 AI Setup
 
-### Why OpenRouter?
+### Choose Your LLM Provider
 
-OpenRouter provides:
+#### Option 1: OpenRouter (Recommended for Production)
+
+**Why OpenRouter?**
 - ✅ Access to multiple AI models (Claude, GPT-4, Llama, Gemini)
 - ✅ OpenAI-compatible API
 - ✅ Pay-per-use pricing (no subscriptions)
-- ✅ Free credits for new users
+- ✅ Free credits for new users ($5)
 - ✅ Automatic fallback between models
 
-### Get API Key
-
+**Get API Key:**
 1. Go to [OpenRouter](https://openrouter.ai)
 2. Sign up for free account
 3. Go to [Keys](https://openrouter.ai/keys)
 4. Create new API key
 5. Add as `OPENROUTER_API_KEY` secret
+6. Set `LLM_PROVIDER=OPENROUTER`
 
-### Pricing
-
-OpenRouter charges per token:
+**Pricing:**
 - Claude 3.5 Sonnet: ~$3 per million tokens
 - GPT-4 Turbo: ~$10 per million tokens
+- Typical usage: 100 messages ≈ $0.10-$0.50
+
+#### Option 2: Groq (Recommended for Development)
+
+**Why Groq?**
+- ✅ Ultra-fast inference (up to 10x faster)
+- ✅ Free tier with generous limits
+- ✅ OpenAI-compatible API
+- ✅ Optimized for Llama models
+- ✅ Perfect for development and testing
+
+**Get API Key:**
+1. Go to [Groq Console](https://console.groq.com)
+2. Sign up for free account
+3. Go to [Keys](https://console.groq.com/keys)
+4. Create new API key
+5. Add as `GROQ_API_KEY` secret
+6. Set `LLM_PROVIDER=GROQ`
+
+**Pricing:**
+- Free tier available
+- Llama 3.3 70B: Free during beta
+- Ultra-fast response times
 - Llama 3.1 70B: ~$0.50 per million tokens
 
 **Typical usage:** 100 chat messages ≈ $0.10-$0.50

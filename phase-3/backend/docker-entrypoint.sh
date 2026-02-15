@@ -30,16 +30,31 @@ if [ -z "$BETTER_AUTH_SECRET" ]; then
 fi
 echo "  ✓ BETTER_AUTH_SECRET is set"
 
-if [ -z "$OPENROUTER_API_KEY" ]; then
-    echo "ERROR: OPENROUTER_API_KEY is not set!"
-    echo "Please set it in Space settings > Variables and secrets"
-    echo "Get your API key from: https://openrouter.ai/keys"
-    exit 1
+# Check LLM provider configuration
+LLM_PROVIDER=${LLM_PROVIDER:-OPENROUTER}
+echo "  ✓ LLM_PROVIDER: $LLM_PROVIDER"
+
+if [ "$LLM_PROVIDER" = "GROQ" ]; then
+    if [ -z "$GROQ_API_KEY" ]; then
+        echo "ERROR: GROQ_API_KEY is not set!"
+        echo "Please set it in Space settings > Variables and secrets"
+        echo "Get your API key from: https://console.groq.com/keys"
+        exit 1
+    fi
+    echo "  ✓ GROQ_API_KEY is set"
+    echo "  ✓ GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}"
+else
+    if [ -z "$OPENROUTER_API_KEY" ]; then
+        echo "ERROR: OPENROUTER_API_KEY is not set!"
+        echo "Please set it in Space settings > Variables and secrets"
+        echo "Get your API key from: https://openrouter.ai/keys"
+        exit 1
+    fi
+    echo "  ✓ OPENROUTER_API_KEY is set"
+    echo "  ✓ OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-3.5-sonnet}"
 fi
-echo "  ✓ OPENROUTER_API_KEY is set"
 
 echo "  ✓ FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}"
-echo "  ✓ OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-3.5-sonnet}"
 echo ""
 
 # Verify application files

@@ -15,10 +15,18 @@ class Settings(BaseSettings):
     # CORS
     FRONTEND_URL: str
 
+    # LLM Provider Selection
+    LLM_PROVIDER: str = "OPENROUTER"  # Options: OPENROUTER or GROQ
+
     # OpenRouter (OpenAI-compatible API)
-    OPENROUTER_API_KEY: str
+    OPENROUTER_API_KEY: str = ""
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     OPENROUTER_MODEL: str = "anthropic/claude-3.5-sonnet"
+
+    # Groq (OpenAI-compatible API)
+    GROQ_API_KEY: str = ""
+    GROQ_BASE_URL: str = "https://api.groq.com/openai/v1"
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     # OpenAI Agents SDK
     AGENT_NAME: str = "TodoAssistant"

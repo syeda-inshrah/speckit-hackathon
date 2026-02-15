@@ -67,7 +67,7 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, tempUserMessage]);
 
     try {
-      const response = await fetch(`http://localhost:8001/api/${userId}/chat`, {
+      const response = await fetch(`http://localhost:7860/api/${userId}/chat`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -84,6 +84,11 @@ export default function ChatPage() {
       }
 
       const data = await response.json();
+
+      // Debug logging
+      console.log('Chat API Response:', data);
+      console.log('Message content:', data.message.content);
+      console.log('Content length:', data.message.content?.length || 0);
 
       // Update conversation ID
       if (data.conversation_id && !conversationId) {
@@ -200,11 +205,17 @@ export default function ChatPage() {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                     message.role === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-blue-600 text-white font-medium'
+                      : 'bg-yellow-200 border-2 border-black'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className={`whitespace-pre-wrap ${
+                    message.role === 'user'
+                      ? 'text-white'
+                      : 'text-black font-bold text-lg'
+                  }`}>
+                    {message.content || '[EMPTY MESSAGE - NO CONTENT RECEIVED]'}
+                  </p>
                   <p
                     className={`text-xs mt-1 ${
                       message.role === 'user' ? 'text-blue-200' : 'text-gray-500'
@@ -239,7 +250,7 @@ export default function ChatPage() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message... (e.g., 'Add a task to buy groceries')"
-                className="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-3 text-gray-900 text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
                 rows={1}
                 disabled={isLoading}
               />

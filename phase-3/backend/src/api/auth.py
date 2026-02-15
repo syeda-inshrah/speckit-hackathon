@@ -7,7 +7,7 @@ from src.core.jwt import create_access_token
 from src.models.user import User
 from src.schemas.auth import UserSignup, UserSignin, AuthResponse, UserResponse
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/signup", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)

@@ -1,0 +1,38 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.2 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.106:3000
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 8s
+ GET / 200 in 2.3s (compile: 1161ms, proxy.ts: 192ms, render: 942ms)
+  Reload env: .env.local
+ GET / 200 in 453ms (compile: 106ms, proxy.ts: 41ms, render: 305ms)
+ GET / 200 in 148ms (compile: 9ms, proxy.ts: 8ms, render: 130ms)
+ HEAD / 200 in 142ms (compile: 7ms, proxy.ts: 8ms, render: 127ms)
+ HEAD / 200 in 139ms (compile: 7ms, proxy.ts: 9ms, render: 123ms)
+ HEAD / 200 in 505ms (compile: 14ms, proxy.ts: 91ms, render: 399ms)
+ HEAD / 200 in 138ms (compile: 7ms, proxy.ts: 7ms, render: 124ms)
+ HEAD / 200 in 374ms (compile: 20ms, proxy.ts: 27ms, render: 327ms)
+ GET / 200 in 461ms (compile: 22ms, proxy.ts: 9ms, render: 430ms)
+ GET / 200 in 1155ms (compile: 125ms, proxy.ts: 10ms, render: 1020ms)
+ GET / 200 in 1359ms (compile: 11ms, proxy.ts: 6ms, render: 1342ms)
+ HEAD / 200 in 177ms (compile: 6ms, proxy.ts: 6ms, render: 165ms)
+ GET / 200 in 2.1s (compile: 22ms, proxy.ts: 57ms, render: 1980ms)
+ GET /dashboard 200 in 2.0s (compile: 1709ms, proxy.ts: 13ms, render: 318ms)
+ GET /chat 200 in 257ms (compile: 129ms, proxy.ts: 14ms, render: 114ms)
+✓ Compiled in 8.4s
+ GET /chat 200 in 1385ms (compile: 384ms, proxy.ts: 145ms, render: 856ms)
+ GET /chat 200 in 717ms (compile: 74ms, proxy.ts: 251ms, render: 392ms)
+✓ Compiled in 444ms
+✓ Compiled in 148ms
+✓ Compiled in 690ms
+ GET /chat 200 in 1177ms (compile: 324ms, proxy.ts: 33ms, render: 820ms)
+✓ Compiled in 163ms
+✓ Compiled in 129ms
+ GET /dashboard 200 in 130ms (compile: 56ms, proxy.ts: 11ms, render: 63ms)
