@@ -55,10 +55,19 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Configure CORS
+# Configure CORS - Allow multiple origins for local dev and production
+allowed_origins = [
+    "http://localhost:3000",  # Local development
+    "https://speckit-hackathon-srha.vercel.app",  # Vercel production
+]
+
+# Add FRONTEND_URL from env if set and not already in list
+if settings.FRONTEND_URL and settings.FRONTEND_URL not in allowed_origins:
+    allowed_origins.append(settings.FRONTEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
