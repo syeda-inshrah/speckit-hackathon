@@ -21,7 +21,10 @@ class GroqMCPAgent:
     """Groq Agent that uses MCP tools for task operations"""
 
     def __init__(self):
-        self.client = Groq(api_key=settings.GROQ_API_KEY)
+        self.client = Groq(
+            api_key=settings.GROQ_API_KEY,
+            base_url=settings.GROQ_BASE_URL
+        )
         self.model = settings.GROQ_MODEL
 
     async def run_agent(
@@ -405,5 +408,15 @@ Be conversational and friendly. Help users understand what you can do."""
         return "\n\n".join(tool_summaries) if tool_summaries else "I've processed your request."
 
 
-# Singleton instance
-groq_mcp_agent = GroqMCPAgent()
+# Lazy initialization - create instance only when needed
+_groq_mcp_agent_instance = None
+
+def get_groq_mcp_agent() -> GroqMCPAgent:
+    """Get or create the GroqMCPAgent singleton instance"""
+    global _groq_mcp_agent_instance
+    if _groq_mcp_agent_instance is None:
+        _groq_mcp_agent_instance = GroqMCPAgent()
+    return _groq_mcp_agent_instance
+
+# For backward compatibility
+groq_mcp_agent = None  # Will be initialized on first use
