@@ -13,8 +13,10 @@ alembic>=1.14.0
 email-validator>=2.0.0
 
 # AI Chat Dependencies
-openai-agents
+groq>=0.11.0
 httpx>=0.27.0
 
-# MCP (Model Context Protocol)
-mcp>=1.2.0
+# MCP (Model Context Protocol) - Commented out for HF Spaces deployment
+# mcp>=1.2.0
+# Note: Full MCP SDK implementation available in GitHub repo
+# This deployment uses direct function calls for compatibility

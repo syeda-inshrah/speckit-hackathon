@@ -1,22 +1,26 @@
 """MCP Server for Todo Task Operations using Official MCP SDK"""
-import asyncio
 import json
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
 
-from mcp.server import Server
-from mcp.server.stdio import stdio_server
-from mcp.types import Tool, TextContent
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.core.database import get_session
 from src.models.task import Task
 
-
-# Initialize MCP Server
-app = Server("todo-mcp-server")
+# MCP SDK imports - optional for web deployment
+try:
+    from mcp.server import Server
+    from mcp.types import Tool, TextContent
+    MCP_AVAILABLE = True
+    # Initialize MCP Server (for tool registration only in web deployment)
+    app = Server("todo-mcp-server")
+except ImportError:
+    MCP_AVAILABLE = False
+    app = None
+    print("MCP SDK not available - using direct function calls")
 
 
 @app.list_tools()
@@ -396,15 +400,16 @@ async def _delete_task(
         }
 
 
-async def main():
-    """Run the MCP server"""
-    async with stdio_server() as (read_stream, write_stream):
-        await app.run(
-            read_stream,
-            write_stream,
-            app.create_initialization_options()
-        )
+# Commented out for web deployment - MCP tools are called directly as functions
+# async def main():
+#     """Run the MCP server"""
+#     async with stdio_server() as (read_stream, write_stream):
+#         await app.run(
+#             read_stream,
+#             write_stream,
+#             app.create_initialization_options()
+#         )
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())
