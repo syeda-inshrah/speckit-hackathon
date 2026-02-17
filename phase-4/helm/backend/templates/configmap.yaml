@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "todo-backend.fullname" . }}-config
+  labels:
+    {{- include "todo-backend.labels" . | nindent 4 }}
+data:
+  LLM_PROVIDER: {{ .Values.config.llmProvider | quote }}
+  GROQ_BASE_URL: {{ .Values.config.groqBaseUrl | quote }}
+  GROQ_MODEL: {{ .Values.config.groqModel | quote }}
+  AGENT_NAME: {{ .Values.config.agentName | quote }}
+  AGENT_INSTRUCTIONS: {{ .Values.config.agentInstructions | quote }}
+  MAX_TOKENS: {{ .Values.config.maxTokens | quote }}
+  TEMPERATURE: {{ .Values.config.temperature | quote }}
+  JWT_ALGORITHM: {{ .Values.config.jwtAlgorithm | quote }}
+  JWT_EXPIRATION_DAYS: {{ .Values.config.jwtExpirationDays | quote }}
+  FRONTEND_URL: {{ .Values.config.frontendUrl | quote }}
+  PORT: {{ .Values.config.port | quote }}

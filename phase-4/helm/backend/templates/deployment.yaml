@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-backend.fullname" . }}
+  labels:
+    {{- include "todo-backend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "todo-backend.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "todo-backend.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        env:
+        # ConfigMap values
+        - name: LLM_PROVIDER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: LLM_PROVIDER
+        - name: GROQ_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: GROQ_BASE_URL
+        - name: GROQ_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: GROQ_MODEL
+        - name: AGENT_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: AGENT_NAME
+        - name: AGENT_INSTRUCTIONS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: AGENT_INSTRUCTIONS
+        - name: MAX_TOKENS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: MAX_TOKENS
+        - name: TEMPERATURE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: TEMPERATURE
+        - name: JWT_ALGORITHM
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: JWT_ALGORITHM
+        - name: JWT_EXPIRATION_DAYS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: JWT_EXPIRATION_DAYS
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: FRONTEND_URL
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-config
+              key: PORT
+        # Secret values
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-secret
+              key: DATABASE_URL
+        - name: BETTER_AUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-secret
+              key: BETTER_AUTH_SECRET
+        - name: GROQ_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-backend.fullname" . }}-secret
+              key: GROQ_API_KEY
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

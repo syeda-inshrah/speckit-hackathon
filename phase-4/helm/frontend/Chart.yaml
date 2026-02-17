@@ -1,0 +1,17 @@
+apiVersion: v2
+name: todo-frontend
+description: A Helm chart for Todo Frontend (Next.js)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - todo
+  - frontend
+  - nextjs
+  - react
+maintainers:
+  - name: Todo App Team
+    email: team@example.com
+home: https://github.com/syeda-inshrah/speckit-hackathon
+sources:
+  - https://github.com/syeda-inshrah/speckit-hackathon

@@ -1,0 +1,18 @@
+apiVersion: v2
+name: todo-backend
+description: A Helm chart for Todo Backend API with AI Chat
+type: application
+version: 1.0.0
+appVersion: "2.0.0"
+keywords:
+  - todo
+  - backend
+  - fastapi
+  - ai
+  - chat
+maintainers:
+  - name: Todo App Team
+    email: team@example.com
+home: https://github.com/syeda-inshrah/speckit-hackathon
+sources:
+  - https://github.com/syeda-inshrah/speckit-hackathon
