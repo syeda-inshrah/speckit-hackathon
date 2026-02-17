@@ -20,15 +20,19 @@ try:
 except ImportError:
     MCP_AVAILABLE = False
     app = None
+    Tool = None
+    TextContent = None
     print("MCP SDK not available - using direct function calls")
 
 
-@app.list_tools()
-async def list_tools() -> list[Tool]:
-    """List all available MCP tools"""
-    return [
-        Tool(
-            name="add_task",
+# Only register MCP decorators if SDK is available
+if MCP_AVAILABLE:
+    @app.list_tools()
+    async def list_tools() -> list[Tool]:
+        """List all available MCP tools"""
+        return [
+            Tool(
+                name="add_task",
             description="Create a new task for the user",
             inputSchema={
                 "type": "object",
@@ -132,59 +136,59 @@ async def list_tools() -> list[Tool]:
     ]
 
 
-@app.call_tool()
-async def call_tool(name: str, arguments: dict) -> list[TextContent]:
-    """Execute a tool by name with given arguments"""
+    @app.call_tool()
+    async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+        """Execute a tool by name with given arguments"""
 
-    # Get database session
-    async for session in get_session():
-        try:
-            if name == "add_task":
-                result = await _add_task(
-                    session=session,
-                    user_id=arguments["user_id"],
-                    title=arguments["title"],
-                    description=arguments.get("description")
-                )
-            elif name == "list_tasks":
-                result = await _list_tasks(
-                    session=session,
-                    user_id=arguments["user_id"],
-                    completed=arguments.get("completed")
-                )
-            elif name == "complete_task":
-                result = await _complete_task(
-                    session=session,
-                    user_id=arguments["user_id"],
-                    task_id=arguments["task_id"]
-                )
-            elif name == "update_task":
-                result = await _update_task(
-                    session=session,
-                    user_id=arguments["user_id"],
-                    task_id=arguments["task_id"],
-                    title=arguments.get("title"),
-                    description=arguments.get("description")
-                )
-            elif name == "delete_task":
-                result = await _delete_task(
-                    session=session,
-                    user_id=arguments["user_id"],
-                    task_id=arguments["task_id"]
-                )
-            else:
-                result = {
-                    "success": False,
-                    "message": f"Unknown tool: {name}"
-                }
+        # Get database session
+        async for session in get_session():
+            try:
+                if name == "add_task":
+                    result = await _add_task(
+                        session=session,
+                        user_id=arguments["user_id"],
+                        title=arguments["title"],
+                        description=arguments.get("description")
+                    )
+                elif name == "list_tasks":
+                    result = await _list_tasks(
+                        session=session,
+                        user_id=arguments["user_id"],
+                        completed=arguments.get("completed")
+                    )
+                elif name == "complete_task":
+                    result = await _complete_task(
+                        session=session,
+                        user_id=arguments["user_id"],
+                        task_id=arguments["task_id"]
+                    )
+                elif name == "update_task":
+                    result = await _update_task(
+                        session=session,
+                        user_id=arguments["user_id"],
+                        task_id=arguments["task_id"],
+                        title=arguments.get("title"),
+                        description=arguments.get("description")
+                    )
+                elif name == "delete_task":
+                    result = await _delete_task(
+                        session=session,
+                        user_id=arguments["user_id"],
+                        task_id=arguments["task_id"]
+                    )
+                else:
+                    result = {
+                        "success": False,
+                        "message": f"Unknown tool: {name}"
+                    }
 
-            return [TextContent(
-                type="text",
-                text=json.dumps(result, indent=2)
-            )]
+                return [TextContent(
+                    type="text",
+                    text=json.dumps(result, indent=2)
+                )]
 
-        finally:
-            await session.close()
+            finally:
+                await session.close()
 
 
 # Tool Implementation Functions

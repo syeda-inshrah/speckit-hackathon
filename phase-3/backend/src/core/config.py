@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 
 
 class Settings(BaseSettings):
@@ -33,6 +34,15 @@ class Settings(BaseSettings):
     AGENT_INSTRUCTIONS: str = "You are a helpful AI assistant for managing todo tasks."
     MAX_TOKENS: int = 2000
     TEMPERATURE: float = 0.7
+
+    # Validators to strip whitespace from all string fields
+    @field_validator('*', mode='before')
+    @classmethod
+    def strip_whitespace(cls, v):
+        """Strip leading/trailing whitespace from all string values"""
+        if isinstance(v, str):
+            return v.strip()
+        return v
 
     model_config = SettingsConfigDict(
         env_file=".env",
